@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ dil.baslik }}</title>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { text-align: center; background: #1e293b; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-width: 450px; width: 100%; }
+        h1 { color: #38bdf8; margin-bottom: 10px; }
+        p { color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
+        .upload-box { background: #0f172a; border: 2px dashed #38bdf8; padding: 30px; border-radius: 8px; margin-bottom: 20px; }
+        button { background: #38bdf8; color: #0f172a; border: none; padding: 12px 24px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; transition: 0.3s; }
+        button:hover { background: #0ea5e9; }
+        .lang-select { margin-bottom: 20px; background: #0f172a; color: white; border: 1px solid #38bdf8; padding: 5px; border-radius: 4px; }
+        .alert { color: #f43f5e; margin-top: 15px; font-size: 14px; font-weight: bold; }
+        .success { color: #10b981; margin-top: 15px; }
+        .credit { color: #fbbf24; font-size: 13px; margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <form method="GET" action="/">
+        <select name="lang" class="lang-select" onchange="this.form.submit()">
+            <option value="tr" {% if seculi_dil == 'tr' %}selected{% endif %}>Türkçe</option>
+            <option value="en" {% if seculi_dil == 'en' %}selected{% endif %}>English</option>
+        </select>
+    </form>
+
+    <h1>{{ dil.baslik }}</h1>
+    <p>{{ dil.alt_baslik }}</p>
+    <div style="margin-bottom: 20px;">
+        {% if mevcut_kullanici %}
+            <p>👋 Hoş geldin, <strong>{{ mevcut_kullanici.isim }}</strong>!</p>
+            <p>🎁 Kalan Ücretsiz Hakkınız: <strong>{{ mevcut_kullanici.hak }}</strong></p>
+            <a href="/logout" style="color: #ff4d4d; text-decoration: none; font-size: 12px;">Çıkış Yap</a>
+        {% else %}
+            <p>⚠️ Ses temizlemek için lütfen giriş yapın.</p>
+            <a href="/login" style="display: inline-block; background-color: #4285F4; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+                Google ile Giriş Yap
+            </a>
+        {% endif %}
+    </div>
+    <div class="credit">🎁 Kalan Ücretsiz Hakkınız: {{ kalan_hak }}</div>
+
+    <form method="POST" action="/temizle" enctype="multipart/form-data">
+        <div class="upload-box">
+            <input type="file" name="ses_dosyası" accept=".wav,.mp3,.mp4" required>
+        </div>
+        <button type="submit">{{ dil.buton_metni }}</button>
+    </form>
+
+    {% if hata %}
+        <div class="alert">⚠️ {{ hata }}</div>
+    {% endif %}
+
+    {% if indirme_linki %}
+        <div class="success">
+            <h3>🎉 {{ dil.islem_basarili }}</h3>
+            <a href="{{ indirme_linki }}" download style="color: #38bdf8; font-weight: bold; text-decoration: none; font-size: 18px;">⬇️ Stüdyo Sesini İndir</a>
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
